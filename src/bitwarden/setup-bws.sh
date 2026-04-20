@@ -22,6 +22,19 @@ check_dependency "curl"
 check_dependency "unzip"
 
 # --------------------------
+# 🔍 Check existing installation
+# --------------------------
+BWS_TARGET_VERSION="2.0.0"
+if command -v bws &> /dev/null; then
+    EXISTING_VERSION=$(bws --version | cut -d' ' -f2)
+    if [ "$EXISTING_VERSION" = "$BWS_TARGET_VERSION" ]; then
+        echo "✅ bws v${BWS_TARGET_VERSION} is already installed"
+        exit 0
+    fi
+    echo "⚠️  Found existing bws v${EXISTING_VERSION}, upgrading to v${BWS_TARGET_VERSION}..."
+fi
+
+# --------------------------
 # 📂 Prepare directories
 # --------------------------
 BWS_BIN_DIR="$HOME/.local/bin"
