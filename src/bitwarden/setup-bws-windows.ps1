@@ -81,3 +81,27 @@ if ($currentPath -notlike "*$installDir*") {
     Write-Host ""
     Write-Host "💡 $installDir is already in your PATH" -ForegroundColor Cyan
 }
+
+# --------------------------
+# 🔧 Set up PowerShell completions
+# --------------------------
+Write-Host ""
+Write-Host "🔧 Setting up PowerShell completions for bws..." -ForegroundColor Cyan
+
+# Check if $profile exists, create if not
+if (-not (Test-Path $profile)) {
+    New-Item -ItemType File -Path $profile -Force | Out-Null
+    Write-Host "✅ Created PowerShell profile: $profile" -ForegroundColor Green
+}
+
+# Read profile content
+$profileContent = Get-Content $profile -Raw
+$completionCommand = "bws completions powershell | Out-String | Invoke-Expression"
+
+# Add completion command if not already present
+if ($profileContent -notlike "*$completionCommand*") {
+    Add-Content -Path $profile -Value "`n# Bitwarden Secret Manager (bws) completions`n$completionCommand"
+    Write-Host "✅ Added bws completions to PowerShell profile" -ForegroundColor Green
+} else {
+    Write-Host "✅ bws completions are already present in PowerShell profile" -ForegroundColor Green
+}
